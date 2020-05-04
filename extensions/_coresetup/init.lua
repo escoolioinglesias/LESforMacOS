@@ -9,6 +9,11 @@ return {setup=function(...)
   local modpath, prettypath, fullpath, configdir, docstringspath, hasinitfile, autoload_extensions = ...
   local tostring,pack,tconcat,sformat=tostring,table.pack,table.concat,string.format
   local crashLog = require("hs.crash").crashLog
+  local fnutils = require("hs.fnutils")
+  local hsmath = require("hs.math")
+
+  -- seed RNG before we do anything else
+  math.randomseed(hsmath.randomFloat()*100000000)
 
   -- setup core functions
 
