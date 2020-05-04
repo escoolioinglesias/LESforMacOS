@@ -8,11 +8,6 @@ local alert = require "hs.alert"
 local as = require "hs.applescript"
 local app = require "hs.application"
 
-local applicationName = 'iTunes'
-if hs.host.operatingSystemVersion().minor >= 15 then
-  applicationName = 'Music'
-end
-
 --- hs.itunes.state_paused
 --- Constant
 --- Returned by `hs.itunes.getPlaybackState()` to indicates iTunes is paused
@@ -30,7 +25,7 @@ itunes.state_stopped = "kPSS"
 
 -- Internal function to pass a command to Applescript.
 local function tell(cmd)
-  local _cmd = 'tell application "' .. applicationName .. '" to ' .. cmd
+  local _cmd = 'tell application "iTunes" to ' .. cmd
   local ok, result = as.applescript(_cmd)
   if ok then
     return result
@@ -185,7 +180,7 @@ end
 --- Returns:
 ---  * A boolean value indicating whether the iTunes application is running.
 function itunes.isRunning()
-   return app.get(applicationName) ~= nil
+   return app.get("iTunes") ~= nil
 end
 
 --- hs.itunes.isPlaying()

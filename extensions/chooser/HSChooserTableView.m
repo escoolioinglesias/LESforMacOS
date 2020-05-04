@@ -60,7 +60,7 @@
 }
 
 - (BOOL) allowsVibrancy {
-    return NO;
+    return YES;
 }
 
 @end

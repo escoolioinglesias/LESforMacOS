@@ -415,7 +415,6 @@ static int eventtap_event_getUnicodeString(lua_State *L) {
 
     // Convert buffer -> NSString
     NSString *theString = [NSString stringWithCharacters:buffer length:actual];
-    free(buffer);
     [skin pushNSObject:theString];
 
     return 1;

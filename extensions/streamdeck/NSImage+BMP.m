@@ -70,7 +70,10 @@
 
     // CMSJ HAX BEGINS
     // This originally used NSImage to decide the size, but that turns out to produce @2x images on a retina Mac.
-    // I've replaced it with an explicitly created NSBitmapImageRep that is set to the actual pixel size we need
+    // I've replaced it with an explicitly created NSBitmapImageRep that is set to the actual pixel size we need (72x72)
+    // This Omni code also renders the BMP upside down, which it claims is correct. For whatever reason, the Stream Deck
+    //  actually seems to render things right-to-left, so if we do a 180 degree transform first, the reverse ordering of
+    //  Omni's code corrects for the y-axis.
 
     /*
     NSBitmapImageRep *bitmapImageRep = (id)[self imageRepOfClass:[NSBitmapImageRep class]];
@@ -86,7 +89,13 @@
     }
      */
 
-    // Create an NSBitmapImageRep locked to our size
+    // Prepare the 180 degree rotation, being careful to apply a translation so we don't rotate around one of the corners.
+    NSAffineTransform* transform = [NSAffineTransform transform];
+    [transform translateXBy:+self.size.width/2 yBy:+self.size.height/2];
+    [transform rotateByDegrees:180];
+    [transform translateXBy:-self.size.width/2 yBy:-self.size.height/2];
+
+    // Create an NSBitmapImageRep locked to 72x72
     NSBitmapImageRep *bitmapImageRep = [[NSBitmapImageRep alloc]
                                         initWithBitmapDataPlanes:NULL
                                         pixelsWide:self.size.width
@@ -101,6 +110,9 @@
     NSGraphicsContext *ctx = [NSGraphicsContext graphicsContextWithBitmapImageRep:bitmapImageRep];
     [NSGraphicsContext saveGraphicsState];
     [NSGraphicsContext setCurrentContext:ctx];
+
+    // Perform the 180 degree rotation
+    [transform concat];
 
     // Render our image into the bitmaprep
     [self drawAtPoint:NSZeroPoint fromRect:NSZeroRect operation:NSCompositingOperationCopy fraction:1.0];

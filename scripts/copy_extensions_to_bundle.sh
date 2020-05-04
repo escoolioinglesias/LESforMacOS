@@ -32,7 +32,6 @@ export HS_MODULES="application \
     json \
     keycodes \
     location \
-    math \
     menubar \
     midi \
     milight \
